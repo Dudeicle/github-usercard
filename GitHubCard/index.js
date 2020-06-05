@@ -40,16 +40,19 @@ axios.get("https://api.github.com/users/Dudeicle")
     user, and adding that card to the DOM.
 */
 
-const followersArray = ["https://github.com/MaryamMosstoufi", "https://github.com/sage-jordan", "https://github.com/jduell12", "https://github.com/emilioramirezeguia", "https://github.com/Roboblox"];
+const followersArray = ["https://api.github.com/users/MaryamMosstoufi", "https://api.github.com/users/sage-jordan", "https://api.github.com/users/jduell12", "https://api.github.com/users/emilioramirezeguia", "https://api.github.com/users/Roboblox"];
 
-let followerCards = followersArray.map((arrayItem) => {
+
+
+followersArray.forEach(arrayItem => {
   axios.get(arrayItem)
     .then(response => {
       let newCard = cardMaker(response.data)
       document.querySelector('.cards').appendChild(newCard)
+      console.log(response)
     })
-    .catch(error => {
-      console.log(error)
+    .catch( error => {
+      console.log("this is an error message", error)
     })
   });
 
@@ -77,10 +80,14 @@ let followerCards = followersArray.map((arrayItem) => {
 
 function cardMaker (data) {
 
+  const {avatar_url, html_url} = data
+
+
+
   const card = document.createElement('div')
   
-
   const cardImg = document.createElement('img')
+  cardImg.src = `${avatar_url}`
   card.classList.add('card')
   card.appendChild(cardImg)
 
@@ -99,16 +106,16 @@ function cardMaker (data) {
   cardInfo.appendChild(cardP1)
 
   const cardP2 = document.createElement('p')
-  cardP2.textContent = "Location:" + data.location
+  cardP2.textContent = "Location: " + data.location
   cardInfo.appendChild(cardP2)
 
   const cardP3 = document.createElement('p')
-  cardP3.textContent = `Profile: `
+  cardP3.innerHTML = `Profile: `
   cardInfo.appendChild(cardP3)
   
   const cardA = document.createElement('a')
-  cardA.setAttribute = ('href', data.url)
-  cardA.textContent = `${data.url}`
+  cardA.href = html_url
+  cardA.textContent = html_url
   cardP3.appendChild(cardA)
 
   const cardP4 = document.createElement('p')
@@ -122,6 +129,9 @@ function cardMaker (data) {
   const cardP6 = document.createElement('p')
   cardP6.textContent = `Bio: ${data.bio}`
   cardInfo.appendChild(cardP6)
+
+  
+  
 
 return card
 }
